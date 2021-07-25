@@ -1,6 +1,3 @@
-// service ipPais
-
-
 const express = require("express");
 const path = require('path');
 
@@ -33,21 +30,18 @@ app.use(allowCrossDomain);
 
 
 app.get('/getpais.json', function (req, res) {
-  var ip = req.connection.remoteAddress || req.headers['x-forwarded-for'];
+  console.log("input=" + req.headers['x-real-ip']);
+  var ip = req.headers['x-real-ip'];
 
   if ( !(ip && ip.length>8) ) {
 	  res.json({IP: '0.0.0.0', country:"US", status:"error"});
 	  return;
   }	
 
-
   var lindex = ip.lastIndexOf(':');
   if (lindex>0 ) {
 	  ip = ip.substring(lindex+1,100);
   }
-
-
-  
   
   var geo = geoip.lookup(ip);
   if (geo) geo = geo.country;
@@ -57,4 +51,3 @@ app.get('/getpais.json', function (req, res) {
 app.listen(portService, () => {
   console.log("Server is running on port "+portService);
 });
-
